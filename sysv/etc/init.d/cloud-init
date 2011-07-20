@@ -1,0 +1,89 @@
+#!/bin/bash
+#
+# Init file for cloud-init
+#
+# chkconfig: 2345 25 25
+# description:  cloud-init is the distribution-agnostic package that handles early
+#               initialization of a cloud instance.
+#
+#  Some of the things it configures are:
+#      - setting a default locale
+#      - setting hostname
+#      - generate ssh private keys
+#      - adding ssh keys to user's .ssh/authorized_keys so they can log in
+#      - setting up ephemeral mount points
+#      - preparing package repositories
+#  and performs a variety of at-boot customization actions based on user-data
+
+# config: /etc/sysconfig/cloudinit
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+
+LOGFILE=/var/log/cloud-init.log
+
+start() {
+        echo -n $"Running cloud-init"
+        if [ -f /etc/sysconfig/cloudinit ]; then
+            . /etc/sysconfig/cloudinit
+        else
+            echo "Unable to load /etc/sysconfig/cloudinit"
+            failure
+        fi
+        echo
+
+        if [ -x /usr/bin/cloud-init ]; then
+            echo -n $"cloud-init:  initialization"
+            /usr/bin/cloud-init start-local >>$LOGFILE
+            /usr/bin/cloud-init start >>$LOGFILE && success || failure
+            echo
+        fi
+
+        if [ "${CONFIG_SSH}"    = "yes" ]; then
+            echo -n $"cloud-init:  ssh"
+            /usr/bin/cloud-init-cfg ssh >>$LOGFILE && success || failure
+            echo
+        fi
+        if [ "${CONFIG_MOUNTS}" = "yes" ]; then
+            echo -n $"cloud-init:  mounts"
+            /usr/bin/cloud-init-cfg mounts >>$LOGFILE && success || failure
+            echo
+        fi
+        if [ "${PACKAGE_SETUP}" = "yes" ]; then
+            echo -n $"cloud-init:  package-setup"
+            /usr/bin/cloud-init-cfg package-setup >>$LOGFILE && success || failure
+            echo
+        fi
+        if [ "${RUNCMD}" = "yes" ]; then
+            echo -n $"cloud-init:  runcmd"
+            /usr/bin/cloud-init-cfg runcmd >>$LOGFILE && success || failure
+            echo
+        fi
+        # Note that user-scripts are run at the end of the boot process (99), not here
+}
+
+stop () {
+        # May add cleanup tasks here in the future...for now, no op
+        echo -n $"Stopping cloud-init (cleanup): " && success
+        echo
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                start
+                ;;
+        *)
+                echo $"Usage: $0 {start|stop|restart}"
+                RETVAL=1
+esac
+exit $RETVAL
+

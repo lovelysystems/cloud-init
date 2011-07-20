@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# cloud-init user-scripts
+#
+# chkconfig: 2345 99 99
+# description:  executes cloud-init user scripts if discovered in user-data,
+#               if any are available
+#
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+LOGFILE=/var/log/cloud-init.log
+SCRIPT_DIR=/var/lib/cloud/data/scripts
+
+start() {
+        echo -n $"Running cloud-init user-scripts"
+        if [ -f /etc/sysconfig/cloudinit ]; then
+            . /etc/sysconfig/cloudinit
+        else
+            echo "Unable to load /etc/sysconfig/cloudinit"
+            failure
+        fi
+
+        if [ "${RUN_USER_SCRIPTS}" = "yes" ]; then
+	    if [ -d "${SCRIPT_DIR}" ]; then
+		/usr/bin/cloud-init-run-module once-per-instance user-scripts execute run-parts ${SCRIPT_DIR} >>$LOGFILE && success || failure
+	    else
+		echo -n $" (none found)" && success
+	    fi
+            echo
+        fi
+}
+
+stop () {
+        # may run cloud-init-run-module with stop args- TODO
+        echo -n $"Stopping cloud-init user-scripts (cleanup): " && success
+        echo
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                start
+                ;;
+        *)
+                echo $"Usage: $0 {start|stop|restart}"
+                RETVAL=1
+esac
+exit $RETVAL
+
