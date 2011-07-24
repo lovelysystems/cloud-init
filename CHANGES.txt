@@ -1,0 +1,10 @@
+======================
+Changes for cloud-init
+======================
+
+2011/07/24 0.5.16
+=================
+
+ - support for puppet on yum based platform such as CentOS
+ - write-multipart tool is able to encode base64
+
