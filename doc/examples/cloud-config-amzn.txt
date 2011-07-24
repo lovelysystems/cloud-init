@@ -21,7 +21,8 @@ repo_update: true
 #
 # Currently supported levels are:
 # none, off, false    : do no perform any package upgrades on instance launch
-# security, critical  : apply security/critical updates on first launch
+# security, critical  : apply security/critical updates on first launch 
+#                       (Not supported on CentOS 5.6)
 # all, on, true       : apply all available upgrades
 #
 # This will also turn on repo_update

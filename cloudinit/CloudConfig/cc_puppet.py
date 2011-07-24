@@ -19,6 +19,7 @@ import os
 import pwd
 import socket
 import subprocess
+import cloudinit.DistAction
 
 def handle(name,cfg,cloud,log,args):
     # If there isn't a puppet key in the configuration don't do anything
@@ -26,14 +27,11 @@ def handle(name,cfg,cloud,log,args):
     puppet_cfg = cfg['puppet']
     # Start by installing the puppet package ...
     e=os.environ.copy()
-    e['DEBIAN_FRONTEND']='noninteractive'
     # Make sure that the apt database is updated since it's not run by
     # default
-    # Note: we should have a helper to check if apt-get update 
-    # has already been run on this instance to speed the boot time.
-    subprocess.check_call(['apt-get', 'update'], env=e)
-    subprocess.check_call(['apt-get', 'install', '--assume-yes',
-                           'puppet'], env=e)
+    dist = cloudinit.DistAction.DistAction("/etc/cloud/dist-defs.cfg")
+    dist.repo_update()
+    dist.repo_install(['puppet'])
     # ... and then update the puppet configuration
     if puppet_cfg.has_key('conf'):
         # Add all sections from the conf object to puppet.conf
