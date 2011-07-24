@@ -56,6 +56,11 @@ start() {
             /usr/bin/cloud-init-cfg package-setup >>$LOGFILE && success || failure
             echo
         fi
+        if [ "${PUPPET}" = "yes" ]; then
+            echo -n $"cloud-init:  puppet"
+            /usr/bin/cloud-init-cfg puppet >>$LOGFILE && success || failure
+            echo
+        fi
         if [ "${RUNCMD}" = "yes" ]; then
             echo -n $"cloud-init:  runcmd"
             /usr/bin/cloud-init-cfg runcmd >>$LOGFILE && success || failure

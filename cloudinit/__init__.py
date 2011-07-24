@@ -35,7 +35,6 @@ cfg_env_name = "CLOUD_CFG"
 # disabled config modules:
 # - grub-dpkg
 # - apt-update-upgrade
-# - puppet
 # - updates-check
 # - disable-ec2-metadata
 cfg_builtin = """
@@ -47,6 +46,7 @@ cloud_config_modules:
  - mounts
  - ssh
  - runcmd
+ - puppet
  - package-setup
 
 log_cfg: built_in

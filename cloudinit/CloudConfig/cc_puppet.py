@@ -42,13 +42,14 @@ def handle(name,cfg,cloud,log,args):
             if cfg_name == 'ca_cert':
                 # Puppet ssl sub-directory isn't created yet
                 # Create it with the proper permissions and ownership
-                os.makedirs('/var/lib/puppet/ssl')
-                os.chmod('/var/lib/puppet/ssl', 0771)
-                os.chown('/var/lib/puppet/ssl',
-                         pwd.getpwnam('puppet').pw_uid, 0)
-                os.makedirs('/var/lib/puppet/ssl/certs/')
-                os.chown('/var/lib/puppet/ssl/certs/',
-                         pwd.getpwnam('puppet').pw_uid, 0)
+                if not os.path.exists('/var/lib/puppet/ssl'):
+                    os.makedirs('/var/lib/puppet/ssl')
+                    os.chmod('/var/lib/puppet/ssl', 0771)
+                    os.chown('/var/lib/puppet/ssl',
+                             pwd.getpwnam('puppet').pw_uid, 0)
+                    os.makedirs('/var/lib/puppet/ssl/certs/')
+                    os.chown('/var/lib/puppet/ssl/certs/',
+                             pwd.getpwnam('puppet').pw_uid, 0)
                 ca_fh = open('/var/lib/puppet/ssl/certs/ca.pem', 'w')
                 ca_fh.write(cfg)
                 ca_fh.close()
@@ -68,9 +69,14 @@ def handle(name,cfg,cloud,log,args):
                     puppet_conf_fh.write("%s=\"%s\"\n" % (o, v))
         puppet_conf_fh.close()
     # Set puppet default file to automatically start
-    subprocess.check_call(['sed', '-i',
-                           '-e', 's/^START=.*/START=yes/',
-                           '/etc/default/puppet'])
-    # Start puppetd
+    # Debian/Ubuntu platforms
+    if os.path.exists('/etc/default/puppet'):
+        subprocess.check_call(['sed', '-i',
+                               '-e', 's/^START=.*/START=yes/',
+                               '/etc/default/puppet'])
+    # RedHat/CentOS platforms
+    elif os.path.exists('/sbin/chkconfig'):
+        subprocess.check_call(['chkconfig', 'puppet', 'on'])
+    # Start puppet
     subprocess.check_call(['service', 'puppet', 'start'])
 

@@ -46,8 +46,7 @@ def handle(name,cfg,cloud,log,args):
 
     dist = cloudinit.DistAction.DistAction("/etc/cloud/dist-defs.cfg")
     
-    if not util.get_cfg_option_bool(cfg, \
-        'repo_preserve', False):
+    if not util.get_cfg_option_bool(cfg, 'repo_preserve', True):
         repo_cfg = dist.get_config_section('repo')
 
         if cfg.has_key("repo_mirror"):
