@@ -2,6 +2,8 @@
 Changes for cloud-init
 ======================
 
+ - support to update route53 dns records
+
 2011/07/24 0.5.16
 =================
 

@@ -7,8 +7,6 @@
 #               initialization of a cloud instance.
 #
 #  Some of the things it configures are:
-#      - setting a default locale
-#      - setting hostname
 #      - generate ssh private keys
 #      - adding ssh keys to user's .ssh/authorized_keys so they can log in
 #      - setting up ephemeral mount points
@@ -41,6 +39,11 @@ start() {
             echo
         fi
 
+        if [ "${CONFIG_DNS}"    = "yes" ]; then
+            echo -n $"cloud-init:  dns"
+            /usr/bin/cloud-init-cfg dns >>$LOGFILE && success || failure
+            echo
+        fi
         if [ "${CONFIG_SSH}"    = "yes" ]; then
             echo -n $"cloud-init:  ssh"
             /usr/bin/cloud-init-cfg ssh >>$LOGFILE && success || failure
@@ -56,14 +59,14 @@ start() {
             /usr/bin/cloud-init-cfg package-setup >>$LOGFILE && success || failure
             echo
         fi
-        if [ "${PUPPET}" = "yes" ]; then
-            echo -n $"cloud-init:  puppet"
-            /usr/bin/cloud-init-cfg puppet >>$LOGFILE && success || failure
-            echo
-        fi
         if [ "${RUNCMD}" = "yes" ]; then
             echo -n $"cloud-init:  runcmd"
             /usr/bin/cloud-init-cfg runcmd >>$LOGFILE && success || failure
+            echo
+        fi
+        if [ "${PUPPET}" = "yes" ]; then
+            echo -n $"cloud-init:  puppet"
+            /usr/bin/cloud-init-cfg puppet >>$LOGFILE && success || failure
             echo
         fi
         # Note that user-scripts are run at the end of the boot process (99), not here
@@ -91,4 +94,3 @@ case "$1" in
                 RETVAL=1
 esac
 exit $RETVAL
-

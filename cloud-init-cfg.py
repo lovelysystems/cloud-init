@@ -90,7 +90,6 @@ def main():
             freq = cfg_mod[1]
         if len(cfg_mod) > 2:
             run_args = cfg_mod[2:]
-
         try:
             log.debug("handling %s with freq=%s and args=%s" %
                 (name, freq, run_args ))

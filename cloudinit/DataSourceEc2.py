@@ -32,12 +32,6 @@ class DataSourceEc2(DataSource.DataSource):
     api_ver  = '2009-04-04'
     cachedir = cloudinit.cachedir + '/ec2'
 
-    location_locale_map = {
-        'us' : 'en_US.UTF-8',
-        'eu' : 'en_GB.UTF-8',
-        'default' : 'en_US.UTF-8',
-    }
-
     def __init__(self):
         pass
 
@@ -91,33 +85,16 @@ class DataSourceEc2(DataSource.DataSource):
 
         if returned_data is None:
             returned_data = user_data
-
         return returned_data
+
+    def get_local_ipv4(self):
+        return (self.metadata['local-ipv4'])
 
     def get_instance_id(self):
         return(self.metadata['instance-id'])
 
     def get_availability_zone(self):
         return(self.metadata['placement']['availability-zone'])
-
-    def get_locale(self):
-        az = self.metadata['placement']['availability-zone']
-        if self.location_locale_map.has_key(az[0:2]):
-            return(self.location_locale_map[az[0:2]])
-        else:
-            return(self.location_locale_map["default"])
-
-    def get_hostname(self):
-        toks = self.metadata['local-hostname'].split('.')
-        # if there is an ipv4 address in 'local-hostname', then
-        # make up a hostname (LP: #475354)
-        if len(toks) == 4:
-            try:
-                r = filter(lambda x: int(x) < 256 and x > 0, toks)
-                if len(r) == 4:
-                    return("ip-%s" % '-'.join(r))
-            except: pass
-        return toks[0]
 
     def get_mirror_from_availability_zone(self, availability_zone = None):
         # availability is like 'us-west-1b' or 'eu-west-1a'

@@ -2,3 +2,15 @@ This project is cloud-init it is hosted on launchpad at
 https://launchpad.net/cloud-init
 
 The package was previously named ec2-init.
+
+DEBUGGING
+=========
+
+mkdir -p /var/lib/cloud/data/cache/nocloud-net 
+# put your userdata in
+sh -c ': > /var/lib/cloud/data/cache/nocloud-net/user-data' 
+
+# removing caches
+find /var/lib/cloud/ -type f '!' -wholename "*cache/nocloud-net*"  -delete 
+
+# meta-data to test with can be found in examples/seed

@@ -32,31 +32,6 @@ import cloudinit
 import subprocess
 import cloudinit.util as util
 
-# (common.set_hostname)
-def set_defaults(locale):
-    cloudinit.log.debug("-- defaults handler/set_defaults() --")
-    locale_file = ""
-
-    try:
-        subprocess.Popen(['locale-gen', locale]).communicate()
-        subprocess.Popen(['update-locale', locale]).communicate()
-        locale_file = "/etc/default/locale"
-    except OSError as e:
-        locale_file = "/etc/sysconfig/i18n"
-
-    if locale_file != "":
-        util.render_to_file('default-locale', locale_file, \
-                            { 'locale' : locale })
-
-# (common.set_hostname)
-def set_hostname(hostname):
-    cloudinit.log.debug("-- defaults handler/set_hostname() --")
-
-    subprocess.Popen(['hostname', hostname]).communicate()
-    f=open("/etc/hostname","wb")
-    f.write("%s\n" % hostname)
-    f.close()
-
 # (init.notify)
 def notify(name, value):
     cloudinit.log.debug("-- defaults handler/notify() --")

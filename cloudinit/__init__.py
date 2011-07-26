@@ -464,12 +464,6 @@ class CloudInit:
     def get_public_ssh_keys(self):
         return(self.datasource.get_public_ssh_keys())
 
-    def get_locale(self):
-        return(self.datasource.get_locale())
-
-    def get_hostname(self):
-        return(self.datasource.get_hostname())
-
     def device_name_to_device(self,name):
         return(self.datasource.device_name_to_device(name))
 

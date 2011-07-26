@@ -48,8 +48,10 @@ class DataSource:
                 # there is an empty string at the end of the keylist, trim it
                 if pkey:
                     keys.append(pkey)
-
         return(keys)
+
+    def get_local_ipv4(self):
+        return (self.metadata['local-ipv4'])
 
     def device_name_to_device(self, name):
         # translate a 'name' to a device
@@ -59,9 +61,6 @@ class DataSource:
         # and return 'sdb' for input 'ephemeral0'
         return(None)
 
-    def get_locale(self):
-        return('en_US.UTF-8')
-
     def get_local_mirror(self):
         return('http://archive.ubuntu.com/ubuntu/')
 
@@ -69,18 +68,3 @@ class DataSource:
         if 'instance-id' not in self.metadata:
             return "ubuntuhost"
         return(self.metadata['instance-id'])
-
-    def get_hostname(self):
-        if not 'local-hostname' in self.metadata:
-            return None
-
-        toks = self.metadata['local-hostname'].split('.')
-        # if there is an ipv4 address in 'local-hostname', then
-        # make up a hostname (LP: #475354)
-        if len(toks) == 4:
-            try:
-                r = filter(lambda x: int(x) < 256 and x > 0, toks)
-                if len(r) == 4:
-                    return("ip-%s" % '-'.join(r))
-            except: pass
-        return toks[0]
