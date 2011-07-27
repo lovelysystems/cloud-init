@@ -24,13 +24,11 @@ import cloudinit.DistAction
 def handle(name,cfg,cloud,log,args):
     # If there isn't a puppet key in the configuration don't do anything
     if not cfg.has_key('puppet'): return
+    
     puppet_cfg = cfg['puppet']
     # Start by installing the puppet package ...
     e=os.environ.copy()
-    # Make sure that the apt database is updated since it's not run by
-    # default
     dist = cloudinit.DistAction.DistAction("/etc/cloud/dist-defs.cfg")
-    dist.repo_update()
     dist.repo_install(['puppet'])
     # ... and then update the puppet configuration
     if puppet_cfg.has_key('conf'):

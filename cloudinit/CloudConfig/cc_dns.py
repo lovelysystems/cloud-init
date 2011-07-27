@@ -24,28 +24,22 @@ import cloudinit.DistAction
 def handle(name,cfg,cloud,log,args):
     # If there isn't a dns key in the configuration don't do anything
     if not cfg.has_key('dns'): return
-    dns_cfg = cfg['dns']
-    try:
-        hostname = dns_cfg['hostname']
-        host, domain = fqdn.lsplit('.', 1)
-        subprocess.Popen(['hostname', fqdn]).communicate()
-        elif os.path.exists("/etc/sysconfig/network"):
-            subprocess.check_call(['sed', '-i',
-                                   '-e', 's/^HOSTNAME=.*/HOSTNAME=%s/' %fqdn,
-                                   '/etc/sysconfig/network'])
-            log.debug("set HOSTNAME in /etc/sysconfig/network to %s on first boot", hostname)
-    except:
-        log.error("failed to set hostname")
 
-    if cfg.has_key('route53'):
-        try:
-            env = {'AWS_ACCESS_KEY_ID': dns_cfg['route53']['aws_access_key_id'],
-                   'AWS_SECRET_ACCESS_KEY': dns_cfg['route53']['aws_secret_access_key']}
-            ttl = dns_cfg['route53']['ttl']
-            ip = cloud.datasource.get_local_ipv4()
-            subprocess.Popen(['/usr/bin/cli53', 'rrcreate', 
-                              domain, host, 'A', ip, '--ttl', ttl, '--replace'], env=env).communicate()
-            log.debug("updated Route53 hostname %s", hostname)
-        except:
-            log.error("failed to update route53 entry for %s", hostname)
+    dns_cfg = cfg['dns']
+    hostname = dns_cfg['hostname']
+    host, domain = hostname.split('.', 1)
+    subprocess.Popen(['hostname', hostname]).communicate()
+    subprocess.check_call(['sed', '-i',
+                           '-e', 's/^HOSTNAME=.*/HOSTNAME=%s/' %hostname,
+                           '/etc/sysconfig/network'])
+    log.debug("set HOSTNAME in /etc/sysconfig/network to %s on first boot", hostname)
+
+    if dns_cfg.has_key('route53'):
+        env = {'AWS_ACCESS_KEY_ID': dns_cfg['route53']['aws_access_key_id'],
+               'AWS_SECRET_ACCESS_KEY': dns_cfg['route53']['aws_secret_access_key']}
+        ttl = '%s' %dns_cfg['route53']['ttl']
+        ip = cloud.datasource.get_local_ipv4()
+        subprocess.Popen(['/usr/bin/cli53', 'rrcreate', 
+                          domain, host, 'A', ip, '--ttl', ttl, '--replace'], env=env).communicate()
+        log.debug("updated Route53 hostname %s", hostname)
 
