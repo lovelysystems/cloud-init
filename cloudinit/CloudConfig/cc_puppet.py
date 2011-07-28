@@ -65,11 +65,11 @@ def handle(name,cfg,cloud,log,args):
                         # certname needs to be downcase
                         v = v.lower()
                     puppet_conf_fh.write("    %s = \"%s\"\n" % (o, v))
-					if o == 'listen':
-				        puppet_namespaceauth_fh = open('/etc/puppet/namespaceauth.conf', 'a')
-						puppet_namespaceauth.write("[puppetrunner]\n")
-						puppet_namespaceauth.write("    allow %s\n" %cfg_name['server']v)
-						puppet_namespaceauth_fh.close()
+                    if o == 'listen':
+                        puppet_namespaceauth_fh = open('/etc/puppet/namespaceauth.conf', 'a')
+                        puppet_namespaceauth.write("[puppetrunner]\n")
+                        puppet_namespaceauth.write("    allow %s\n" %cfg_name['server'])
+                        puppet_namespaceauth_fh.close()
         puppet_conf_fh.close()
     # Set puppet default file to automatically start
     # Debian/Ubuntu platforms
