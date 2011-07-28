@@ -87,8 +87,8 @@ class DataSourceEc2(DataSource.DataSource):
             returned_data = user_data
         return returned_data
 
-    def get_local_ipv4(self):
-        return (self.metadata['local-ipv4'])
+    def get_public_hostname(self):
+        return (self.metadata['public-hostname'])
 
     def get_instance_id(self):
         return(self.metadata['instance-id'])

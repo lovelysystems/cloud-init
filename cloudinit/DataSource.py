@@ -50,8 +50,8 @@ class DataSource:
                     keys.append(pkey)
         return(keys)
 
-    def get_local_ipv4(self):
-        return (self.metadata['local-ipv4'])
+    def get_public_hostname(self):
+        return (self.metadata['public-hostname'])
 
     def device_name_to_device(self, name):
         # translate a 'name' to a device

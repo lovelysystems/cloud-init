@@ -38,8 +38,8 @@ def handle(name,cfg,cloud,log,args):
         env = {'AWS_ACCESS_KEY_ID': dns_cfg['route53']['aws_access_key_id'],
                'AWS_SECRET_ACCESS_KEY': dns_cfg['route53']['aws_secret_access_key']}
         ttl = '%s' %dns_cfg['route53']['ttl']
-        ip = cloud.datasource.get_local_ipv4()
+        hostname = cloud.datasource.get_public_hostname()
         subprocess.Popen(['/usr/bin/cli53', 'rrcreate', 
-                          domain, host, 'A', ip, '--ttl', ttl, '--replace'], env=env).communicate()
+                          domain, host, 'CNAME', hostname, '--ttl', ttl, '--replace'], env=env).communicate()
         log.debug("updated Route53 hostname %s", hostname)
 
