@@ -24,11 +24,11 @@ start() {
         fi
 
         if [ "${RUN_USER_SCRIPTS}" = "yes" ]; then
-	    if [ -d "${SCRIPT_DIR}" ]; then
-		/usr/bin/cloud-init-run-module once-per-instance user-scripts execute run-parts ${SCRIPT_DIR} >>$LOGFILE && success || failure
-	    else
-		echo -n $" (none found)" && success
-	    fi
+        if [ -d "${SCRIPT_DIR}" ]; then
+        /usr/bin/cloud-init-run-module once-per-instance user-scripts execute run-parts ${SCRIPT_DIR} >>$LOGFILE && success || failure
+        else
+        echo -n $" (none found)" && success
+        fi
             echo
         fi
 }
