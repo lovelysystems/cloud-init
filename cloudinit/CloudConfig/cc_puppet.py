@@ -64,11 +64,11 @@ def handle(name,cfg,cloud,log,args):
                               cloud.datasource.get_instance_id())
                         # certname needs to be downcase
                         v = v.lower()
-                    puppet_conf_fh.write("    %s = \"%s\"\n" % (o, v))
+                    puppet_conf_fh.write("    %s = %s\n" % (o, v.lower()))
                     if o == 'listen':
                         puppet_namespaceauth_fh = open('/etc/puppet/namespaceauth.conf', 'a')
-                        puppet_namespaceauth.write("[puppetrunner]\n")
-                        puppet_namespaceauth.write("    allow %s\n" %cfg_name['server'])
+                        puppet_namespaceauth_fh.write("[puppetrunner]\n")
+                        puppet_namespaceauth_fh.write("    allow %s\n" %cfg_name['server'])
                         puppet_namespaceauth_fh.close()
         puppet_conf_fh.close()
     # Set puppet default file to automatically start
