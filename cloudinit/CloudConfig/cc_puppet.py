@@ -68,7 +68,7 @@ def handle(name,cfg,cloud,log,args):
                     if o == 'listen':
                         puppet_namespaceauth_fh = open('/etc/puppet/namespaceauth.conf', 'a')
                         puppet_namespaceauth_fh.write("[puppetrunner]\n")
-                        puppet_namespaceauth_fh.write("    allow %s\n" %cfg_name['server'])
+                        puppet_namespaceauth_fh.write("    allow %s\n" %puppet_cfg['conf']['puppetd']['server'])
                         puppet_namespaceauth_fh.close()
         puppet_conf_fh.close()
     # Set puppet default file to automatically start
