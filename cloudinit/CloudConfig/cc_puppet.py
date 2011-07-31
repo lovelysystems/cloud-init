@@ -44,7 +44,7 @@ def handle(name,cfg,cloud,log,args):
         os.chown('%s/certs' %ssldir, puid, 0)
         os.makedirs('%s/private_keys' %ssldir)
         os.chmod('%s/private_keys' %ssldir, 0750)
-        os.chown('%s/certs/private_keys' %ssldir, puid, 0)
+        os.chown('%s/private_keys' %ssldir, puid, 0)
         os.makedirs('%s/public_keys' %ssldir)
         os.chown('%s/public_keys' %ssldir, puid, 0)
     # Add all sections from the conf object to puppet.conf

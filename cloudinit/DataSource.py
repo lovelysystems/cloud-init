@@ -53,6 +53,9 @@ class DataSource:
     def get_public_hostname(self):
         return (self.metadata['public-hostname'])
 
+    def get_local_ipv4(self):
+        return (self.metadata['local-ipv4'])
+
     def device_name_to_device(self, name):
         # translate a 'name' to a device
         # the primary function at this point is on ec2
