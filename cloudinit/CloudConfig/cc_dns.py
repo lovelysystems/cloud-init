@@ -36,7 +36,7 @@ def handle(name,cfg,cloud,log,args):
     local_ipv4 = cloud.datasource.get_local_ipv4()
     hosts_fh = open('/etc/hosts', 'a')
     hosts_fh.write("\n%s    %s    %s" %(local_ipv4, hostname, host))
-    log.debug("set entry for %s to %s in /etc/hosts", %(hostname, local_ipv4))
+    log.debug("set entry for %s to %s in /etc/hosts" %(hostname, local_ipv4))
 
     if dns_cfg.has_key('route53'):
         env = {'AWS_ACCESS_KEY_ID': dns_cfg['route53']['aws_access_key_id'],
