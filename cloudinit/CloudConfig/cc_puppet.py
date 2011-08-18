@@ -30,7 +30,7 @@ def handle(name,cfg,cloud,log,args):
     e=os.environ.copy()
     dist = cloudinit.DistAction.DistAction("/etc/cloud/dist-defs.cfg")
     dist.repo_install(['puppet'])
-    servername = puppet_cfg['conf']['puppetd']['server']
+    servername = puppet_cfg['conf']['agent']['server']
     hostname = socket.getfqdn()
     ssldir = '/var/lib/puppet/ssl'
     # Puppet ssl sub-directory isn't created yet
