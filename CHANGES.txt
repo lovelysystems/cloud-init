@@ -2,7 +2,9 @@
 Changes for cloud-init
 ======================
 
- - support to update route53 dns records
+ - mountpoint creation off by default
+ - puppet 2.6.6 needs to be installed on base image (inside epel-testing repo)
+ - support to update route53 dns records, forward+reverse
 
 2011/07/24 0.5.16
 =================
