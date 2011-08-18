@@ -48,7 +48,8 @@ def handle(name,cfg,cloud,log,args):
         ptr = '.'.join(ptr)+'.'
         subprocess.Popen(['/usr/bin/cli53', 'rrcreate', domain, host, 
                           'CNAME', hostname, '--ttl', ttl, '--replace'], env=env).communicate()
+        log.debug("updated Route53 CNAME %s of %s", %(hostname, host))
         subprocess.Popen(['/usr/bin/cli53', 'rrcreate', '10.in-addr.arpa', ptr, 
-                          'PTR', '%s.%s.' %(host, domain), '--ttl', ttl, '--replace'], env=env).communicate()
-        
+                          'PTR', '%s.%s' %(host, domain), '--ttl', ttl, '--replace'], env=env).communicate()
         log.debug("updated Route53 hostname %s", hostname)
+        
