@@ -43,13 +43,14 @@ def handle(name,cfg,cloud,log,args):
                'AWS_SECRET_ACCESS_KEY': dns_cfg['route53']['aws_secret_access_key']}
         ttl = '%s' %dns_cfg['route53']['ttl']
         hostname = cloud.datasource.get_public_hostname()
+        subprocess.Popen(['/usr/bin/cli53', 'rrcreate', domain, host,
+                          'CNAME', hostname, '--ttl', ttl, '--replace'], env=env).communicate()
+        log.debug("updated Route53: %s CNAME %s" %(host, hostname))
+
         ptr = local_ipv4.split('.')
         ptr.reverse()
-        ptr = '.'.join(ptr)+'.'
-        subprocess.Popen(['/usr/bin/cli53', 'rrcreate', domain, host, 
-                          'CNAME', hostname, '--ttl', ttl, '--replace'], env=env).communicate()
-        log.debug("updated Route53 CNAME %s of %s", %(hostname, host))
-        subprocess.Popen(['/usr/bin/cli53', 'rrcreate', '10.in-addr.arpa', ptr, 
+        ptr = '.'.join(ptr)+'.in-addr.arpa.'
+        subprocess.Popen(['/usr/bin/cli53', 'rrcreate', '10.in-addr.arpa', ptr,
                           'PTR', '%s.%s' %(host, domain), '--ttl', ttl, '--replace'], env=env).communicate()
-        log.debug("updated Route53 hostname %s", hostname)
+        log.debug("updated Route53: %s PTR %s.%s" %(ptr, host, domain))
         
