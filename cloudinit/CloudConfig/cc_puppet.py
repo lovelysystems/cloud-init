@@ -91,4 +91,3 @@ def handle(name,cfg,cloud,log,args):
     subprocess.check_call(['chkconfig', 'puppet', 'on'])
     # Start puppet
     subprocess.check_call(['service', 'puppet', 'start'])
-
